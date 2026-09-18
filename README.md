@@ -4,7 +4,9 @@
 
 The premise: a serious reader accumulates real expertise in three or four odd subjects, and it stays stuck — a pile of books, a column of star ratings, a few hundred words written at midnight. Turning that into a course someone could work through takes a week of evenings per subject. Majlis does the assembly work; the reader stays the professor.
 
-**Status: in progress.** The [PRD](docs/PRD.md) is written, the [prototype](prototype/) is clickable, and the cartographer (step one of the pipeline) runs. The council itself isn't built yet.
+**Status: in progress.** The [PRD](docs/PRD.md) is written, the [prototype](prototype/) is clickable, the cartographer has mapped the shelf into 16 subjects, and the council has produced its first real syllabus — see [`runs/`](runs/). Still to come: the eval suite, the rest of the syllabi, and the site that replays a run.
+
+A run costs about $0.80 and takes four minutes, so syllabi are generated offline and the site replays the recorded run rather than convening the council per visitor.
 
 ## How it's meant to work
 
@@ -57,6 +59,8 @@ Named for the *isnad*, the chain of transmission classical scholars used to deci
 | [`pipeline/cartographer.py`](pipeline/cartographer.py) | Reads the shelf, proposes subjects, assigns books, judges what each can teach |
 | [`data/shelf.json`](data/shelf.json) | The library: 837 books with status, rating, review, and a catalog entry per book |
 | [`data/map.json`](data/map.json) | The cartographer's output: subjects, verdicts, and what each is missing |
+| [`pipeline/council.py`](pipeline/council.py) | The council: lead → researchers → Isnad → counter-reader → realist → lead |
+| [`runs/`](runs/) | Real council runs: every agent's step with timing and cost, plus the syllabus it produced |
 | [`prototype/project/`](prototype/project/) | The clickable prototype: the map, the council at work, a syllabus, and the refusal screen |
 
 ## The data the cartographer eats
