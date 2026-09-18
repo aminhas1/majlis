@@ -51,15 +51,20 @@ WEB_SEARCH = {"type": "web_search_20260209", "name": "web_search", "max_uses": 4
 class Run:
     """Collects everything that happened, for the terminal and for the site."""
 
-    def __init__(self, subject: dict):
+    def __init__(self, subject: dict, on_event=None):
         self.subject = subject
         self.events: list[dict] = []
         self.cost = 0.0
         self.started = time.time()
+        # The local API passes a callback so the UI can watch a run as it happens.
+        self.on_event = on_event
 
     def event(self, agent: str, kind: str, text: str, **extra) -> None:
         at = round(time.time() - self.started, 1)
-        self.events.append({"at": at, "agent": agent, "kind": kind, "text": text, **extra})
+        payload = {"at": at, "agent": agent, "kind": kind, "text": text, **extra}
+        self.events.append(payload)
+        if self.on_event:
+            self.on_event({**payload, "cost_usd": round(self.cost, 3)})
         colour = {"strike": "\033[31m", "objection": "\033[33m", "done": "\033[32m"}.get(kind, "")
         print(f"  {at:6.1f}s  {colour}{agent:<12}\033[0m {text}")
 
@@ -146,16 +151,19 @@ LEAD_SPLIT_SCHEMA = {
     "additionalProperties": False,
 }
 
-RESEARCHER_SYSTEM = """You are a researcher on a teaching council. You have one thread of a course and the professor's library.
+RESEARCHER_SYSTEM = """You are a researcher on a teaching council. You have one thread of a course, the professor's own library, and the web.
 
-Propose 2-3 readings for your thread, from the library only. For each: which book, what part of it to assign (a named chapter or section where you can, otherwise the whole book), why it belongs in this thread, and an honest page estimate.
+Propose 3-4 readings for your thread — the best ones for teaching it, wherever they come from.
 
-Rules:
-- Prefer books the professor rated 4-5 stars, especially ones she wrote a note about.
+The professor's shelf is a strong signal, not a boundary:
+- A book she rated 4-5 stars, especially one she wrote a note about, is a recommendation from someone who has read it. Prefer it where it fits.
 - A book she rated 1-2 stars needs a real justification; say why nothing else will do.
-- A book she abandoned can be assigned in part, never whole.
-- Say what you are claiming about the book's contents; a verifier will check it, and a wrong claim is worse than a vague one.
-- If the library cannot support this thread, return no readings and say what is missing."""
+- A book she abandoned may be assigned in part, never whole.
+- Where the shelf has nothing good for this thread, search for what a real course would assign. Outside readings are normal, not a failure — but they must be obtainable without a university library (in print, open access, common in public libraries, public domain), and you must say where to get one.
+
+For each reading give: the book, what part to assign (a named chapter or section where you can), what you are claiming that part covers, why it belongs here, and an honest page estimate. A verifier checks every claim, and a wrong claim is worse than a vague one.
+
+Aim for a mix: at least one reading from the professor's shelf per thread where the shelf allows it."""
 
 RESEARCHER_SCHEMA = {
     "type": "object",
@@ -165,14 +173,16 @@ RESEARCHER_SCHEMA = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "book_id": {"type": "string"},
+                    "book_id": {"type": "string", "description": "The shelf id in [brackets], or \"outside\" for a book that isn't on the shelf."},
                     "title": {"type": "string"},
+                    "author": {"type": "string"},
                     "assign": {"type": "string", "description": "e.g. 'Chapters 1-3' or 'Whole book'"},
                     "claim": {"type": "string", "description": "What this part of the book covers. The verifier checks this."},
                     "why": {"type": "string"},
                     "pages": {"type": "integer"},
+                    "where_to_get": {"type": "string", "description": "For outside readings only: how a person without a university gets it."},
                 },
-                "required": ["book_id", "title", "assign", "claim", "why", "pages"],
+                "required": ["book_id", "title", "author", "assign", "claim", "why", "pages", "where_to_get"],
                 "additionalProperties": False,
             },
         },
@@ -191,6 +201,8 @@ Verdicts:
 - "unconfirmed": the claim is wrong, the chapter doesn't exist, or you cannot establish it.
 - "narrowed": the book covers the subject but the named part is wrong; give the correct part in `correction`.
 
+For a reading that is NOT on the professor's shelf, also check that the book exists as described and can be obtained without a university library. If it can't, mark it unconfirmed and say so.
+
 Be strict. An unconfirmed claim is struck from the syllabus, which is the right outcome. Never confirm something to be helpful."""
 
 ISNAD_SCHEMA = {
@@ -201,12 +213,12 @@ ISNAD_SCHEMA = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "book_id": {"type": "string"},
+                    "ref": {"type": "string", "description": "The [ref] of the proposal being judged."},
                     "verdict": {"type": "string", "enum": ["confirmed", "unconfirmed", "narrowed"]},
                     "reason": {"type": "string"},
                     "correction": {"type": "string"},
                 },
-                "required": ["book_id", "verdict", "reason", "correction"],
+                "required": ["ref", "verdict", "reason", "correction"],
                 "additionalProperties": False,
             },
         }
@@ -262,12 +274,12 @@ REALIST_SCHEMA = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "book_id": {"type": "string"},
+                    "ref": {"type": "string", "description": "The [ref] of the reading."},
                     "action": {"type": "string", "enum": ["cut", "trim"]},
                     "reason": {"type": "string"},
                     "trim_to": {"type": "string"},
                 },
-                "required": ["book_id", "action", "reason", "trim_to"],
+                "required": ["ref", "action", "reason", "trim_to"],
                 "additionalProperties": False,
             },
         },
@@ -288,7 +300,7 @@ Rules:
 - Only use readings given to you. Never add a book.
 - Honour the realist's cuts and the verifier's corrections.
 - If the counter-reader's addition was accepted, give it a unit slot and mark it as not from the shelf.
-- Where the professor wrote a note about a book, quote her words as the professor's note; never paraphrase or invent one.
+- The professor's notes are given to you separately, under "THE PROFESSOR'S OWN NOTES". For a reading that has one, copy her words verbatim into `professors_note` — never paraphrase, never summarise, and never write one yourself. For every other reading, `professors_note` MUST be empty. A book's catalogue description is not her note; using it there is a fabrication and will be caught.
 - If there isn't enough material for {weeks} units, write fewer and say why in `shortfall`."""
 
 RECONCILE_SCHEMA = {
@@ -309,6 +321,7 @@ RECONCILE_SCHEMA = {
                         "items": {
                             "type": "object",
                             "properties": {
+                                "ref": {"type": "string", "description": "The [ref] of the confirmed reading."},
                                 "book_id": {"type": "string"},
                                 "title": {"type": "string"},
                                 "author": {"type": "string"},
@@ -317,7 +330,7 @@ RECONCILE_SCHEMA = {
                                 "from_shelf": {"type": "boolean"},
                                 "professors_note": {"type": "string", "description": "Her own words, verbatim, or empty."},
                             },
-                            "required": ["book_id", "title", "author", "assign", "pages", "from_shelf", "professors_note"],
+                            "required": ["ref", "book_id", "title", "author", "assign", "pages", "from_shelf", "professors_note"],
                             "additionalProperties": False,
                         },
                     },
@@ -349,6 +362,46 @@ def book_line(b: dict, full: bool = False) -> str:
     return line
 
 
+def notes_block(kept: list[dict], books: dict) -> str:
+    out = []
+    for p in kept:
+        book = books.get(p["book_id"])
+        if book and book.get("review"):
+            out.append(f"[{p['ref']}] {book['title']} — she wrote:\n\"{book['review']}\"")
+    return "\n\n".join(out)
+
+
+def check_notes(syllabus: dict, books: dict, run: Run) -> None:
+    """A quoted note must be her actual words. Anything else is a fabrication; blank it."""
+    for unit in syllabus["units"]:
+        for r in unit["readings"]:
+            note = (r.get("professors_note") or "").strip().strip('"')
+            if not note:
+                continue
+            review = (books.get(r.get("book_id"), {}) or {}).get("review") or ""
+            normalise = lambda t: " ".join(t.lower().split())
+            if not review or normalise(note[:120]) not in normalise(review):
+                run.event("audit", "strike", f"note on {r['title'][:40]} was not the professor's words — removed")
+                r["professors_note"] = ""
+
+
+def audit_trail(syllabus: dict, kept: list[dict], real: dict, run: Run) -> list[dict]:
+    """Every confirmed reading either ships or has a recorded reason for not shipping."""
+    shipped = {r.get("ref") for unit in syllabus["units"] for r in unit["readings"]}
+    cuts = {c["ref"]: c for c in real["cuts"] if c["action"] == "cut"}
+    dropped = []
+    for p in kept:
+        if p["ref"] in shipped:
+            continue
+        cut = cuts.get(p["ref"])
+        reason = cut["reason"] if cut else "Dropped by the lead while reconciling, without a stated reason."
+        by = "Realist" if cut else "Lead"
+        dropped.append({**p, "struck_by": by, "reason": reason})
+        if not cut:
+            run.event("audit", "strike", f"{p['title'][:44]} vanished with no reason given")
+    return dropped
+
+
 def council(client, run: Run, books: dict) -> dict:
     subject, shelf = run.subject, [books[i] for i in run.subject["book_ids"] if i in books]
     catalogue = "\n".join(book_line(b, full=True) for b in shelf)
@@ -364,8 +417,8 @@ def council(client, run: Run, books: dict) -> dict:
     def research(thread: dict) -> tuple[dict, dict]:
         out = ask(client, run, WORKER_MODEL, RESEARCHER_SYSTEM,
                   f"Thread: {thread['title']}\nIt must establish: {thread['focus']}\n\n"
-                  f"The professor's library for this subject:\n{catalogue}",
-                  RESEARCHER_SCHEMA)
+                  f"The professor's shelf for this subject (her ratings are recommendations):\n{catalogue}",
+                  RESEARCHER_SCHEMA, tools=[WEB_SEARCH])
         return thread, out
 
     with ThreadPoolExecutor(max_workers=len(plan["threads"])) as pool:
@@ -374,22 +427,24 @@ def council(client, run: Run, books: dict) -> dict:
     proposals = []
     for thread, out in results:
         for r in out["readings"]:
-            proposals.append({**r, "thread": thread["title"]})
-        run.event(f"researcher", "propose",
+            proposals.append({**r, "thread": thread["title"], "ref": f"r{len(proposals) + 1}"})
+        run.event("researcher", "propose",
                   f"{thread['title']}: " + (", ".join(f"{r['title'][:34]} ({r['assign']})" for r in out["readings"]) or "nothing on the shelf"),
-                  thread=thread["title"])
+                  thread=thread["title"], count=len(out["readings"]))
         if out["gap"]:
             run.event("researcher", "gap", f"{thread['title']}: {out['gap']}", thread=thread["title"])
 
     claims = "\n".join(
-        f"[{p['book_id']}] {p['title']} — assigning {p['assign']}. Claim: {p['claim']}" for p in proposals)
+        f"[{p['ref']}] {p['title']} — {p.get('author', '')} "
+        f"({'on the shelf' if p['book_id'] != 'outside' else 'NOT on the shelf: ' + (p.get('where_to_get') or 'no source given')}). "
+        f"Assigning {p['assign']}. Claim: {p['claim']}" for p in proposals)
     checked = ask(client, run, ISNAD_MODEL, ISNAD_SYSTEM,
                   f"Verify these proposed assignments:\n{claims}", ISNAD_SCHEMA, tools=[WEB_SEARCH])
 
-    verdicts = {v["book_id"]: v for v in checked["verdicts"]}
+    verdicts = {v["ref"]: v for v in checked["verdicts"]}
     kept, struck = [], []
     for p in proposals:
-        v = verdicts.get(p["book_id"], {"verdict": "unconfirmed", "reason": "No verdict returned.", "correction": ""})
+        v = verdicts.get(p["ref"], {"verdict": "unconfirmed", "reason": "Isnad returned no verdict for this reading.", "correction": ""})
         if v["verdict"] == "unconfirmed":
             struck.append({**p, "struck_by": "Isnad", "reason": v["reason"]})
             run.event("isnad", "strike", f"{p['title'][:44]} — {v['reason'][:110]}")
@@ -398,9 +453,18 @@ def council(client, run: Run, books: dict) -> dict:
                 run.event("isnad", "narrow", f"{p['title'][:44]} → {v['correction'][:80]}")
                 p = {**p, "assign": v["correction"]}
             kept.append(p)
-    run.event("isnad", "done", f"{len(kept)} confirmed, {len(struck)} struck")
+    run.event("isnad", "done", f"{len(kept)} confirmed, {len(struck)} struck",
+              confirmed=len(kept), struck=len(struck))
 
-    draft = "\n".join(f"- [{p['book_id']}] {p['title']} — {p['assign']} ({p['thread']}): {p['claim']}" for p in kept)
+    def source_of(p: dict) -> str:
+        if p["book_id"] != "outside":
+            return "professor's shelf"
+        return "not on the shelf — " + (p.get("where_to_get") or "no source given")
+
+    draft = "\n".join(
+        f"- [{p['ref']}] {p['title']} — {p.get('author', '')}, {p['assign']}, ~{p['pages']}pp "
+        f"({p['thread']}; {source_of(p)}): {p['claim']}"
+        for p in kept)
 
     def counter_reader():
         return ask(client, run, WORKER_MODEL, COUNTER_SYSTEM,
@@ -412,7 +476,7 @@ def council(client, run: Run, books: dict) -> dict:
         return ask(client, run, WORKER_MODEL,
                    REALIST_SYSTEM.format(weeks=WEEKS, hours=HOURS_PER_WEEK, pages=HOURS_PER_WEEK * PAGES_PER_HOUR),
                    f"Confirmed readings:\n" + "\n".join(
-                       f"- [{p['book_id']}] {p['title']} — {p['assign']}, ~{p['pages']}pp ({p['thread']})" for p in kept),
+                       f"- [{p['ref']}] {p['title']} — {p['assign']}, ~{p['pages']}pp ({p['thread']})" for p in kept),
                    REALIST_SCHEMA)
 
     with ThreadPoolExecutor(max_workers=2) as pool:
@@ -422,8 +486,10 @@ def council(client, run: Run, books: dict) -> dict:
     run.event("counter", "objection", counter["objection"][:160])
     if not counter["balanced"]:
         run.event("counter", "addition", f"proposes {counter['addition']['title']} — {counter['addition']['where_to_get'][:60]}")
+    by_ref = {p["ref"]: p for p in kept}
     for c in real["cuts"]:
-        run.event("realist", "cut", f"{c['action']}: {c.get('trim_to') or ''} {c['reason'][:90]}")
+        title = by_ref.get(c["ref"], {}).get("title", c["ref"])
+        run.event("realist", "cut", f"{c['action']} {title[:38]}: {c['reason'][:90]}")
     run.event("realist", "verdict", real["verdict"][:140])
 
     syllabus = ask(client, run, LEAD_MODEL,
@@ -434,12 +500,18 @@ def council(client, run: Run, books: dict) -> dict:
                    f"Counter-reader's objection: {counter['objection']}\n"
                    f"Proposed addition: {json.dumps(counter['addition']) if not counter['balanced'] else 'none'}\n\n"
                    f"Realist — entry point: {real['entry_point']}; cuts: {json.dumps(real['cuts'])}\n\n"
-                   f"The professor's notes and ratings:\n{catalogue}",
+                   f"THE PROFESSOR'S OWN NOTES (verbatim; the only text allowed in professors_note):\n"
+                   + (notes_block(kept, books) or "(none of the confirmed readings has a note from her)"),
                    RECONCILE_SCHEMA, max_tokens=16000)
     run.event("lead", "done", f"{len(syllabus['units'])} units" + (f" — {syllabus['shortfall']}" if syllabus["shortfall"] else ""))
 
-    syllabus["struck"] = struck
+    check_notes(syllabus, books, run)
+    syllabus["struck"] = struck + audit_trail(syllabus, kept, real, run)
     syllabus["objection"] = counter["objection"]
+    syllabus["realist_verdict"] = real["verdict"]
+    run.event("audit", "done",
+              f"{sum(len(u['readings']) for u in syllabus['units'])} readings shipped, "
+              f"{len(syllabus['struck'])} accounted for as struck or cut")
     return syllabus
 
 

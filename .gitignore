@@ -5,3 +5,7 @@ dist/
 __pycache__/
 .DS_Store
 data/shelf.json.bak
+web/node_modules/
+web/.output/
+web/.nitro/
+web/.tanstack/

@@ -1,0 +1,6 @@
+- [x] Redesign the syllabus-maker as a visually impressive contemporary portfolio project.
+- [x] Preserve Arabic/Islamic geometric or calligraphic influence without making it feel conventionally scholarly.
+- [x] Present generated topics in smarter, more expressive shapes.
+- [x] Keep the opening compact so course topics visibly peek above the fold and recruiters can click immediately.
+- [x] Use monumental contemporary Islamic geometry or oversized calligraphy as the striking background element.
+- [x] Keep Goodreads provenance secondary rather than headline-dominant.

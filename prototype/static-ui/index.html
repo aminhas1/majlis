@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Majlis</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3ece0; --panel: #fffdf8; --ink: #17130f; --muted: #6b6151; --faint: #92826a;
+    --line: #ddd0b8; --green: #1f6152; --gold: #a97b27; --red: #9c3f2d; --lapis: #23407e;
+    --dark: #1c1a16; --dark-panel: #232019; --dark-line: #38332a; --dark-ink: #f2ebdc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink); font-family: Karla, system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'><g fill='none' stroke='%23a97b27' stroke-width='1.2'><path d='M0 75.0 H150 M75.0 0 V150 M0 0 L150 150 M150 0 L0 150' stroke-opacity='.10'/><path d='M38.0 0.0L-26.9 26.9L-0.0 -38.0L26.9 26.9L-38.0 0.0L26.9 -26.9L0.0 38.0L-26.9 -26.9Z' stroke-opacity='.26'/><path d='M188.0 0.0L123.1 26.9L150.0 -38.0L176.9 26.9L112.0 0.0L176.9 -26.9L150.0 38.0L123.1 -26.9Z' stroke-opacity='.26'/><path d='M38.0 150.0L-26.9 176.9L-0.0 112.0L26.9 176.9L-38.0 150.0L26.9 123.1L0.0 188.0L-26.9 123.1Z' stroke-opacity='.26'/><path d='M188.0 150.0L123.1 176.9L150.0 112.0L176.9 176.9L112.0 150.0L176.9 123.1L150.0 188.0L123.1 123.1Z' stroke-opacity='.26'/><path d='M113.0 75.0L48.1 101.9L75.0 37.0L101.9 101.9L37.0 75.0L101.9 48.1L75.0 113.0L48.1 48.1Z' stroke-opacity='.26'/></g></svg>");
+    background-size: 150px 150px;
+  }
+  .arabic { font-family: Amiri, "Cormorant Garamond", serif; }
+  .serif { font-family: "Cormorant Garamond", Georgia, serif; }
+  button { font: inherit; cursor: pointer; }
+  a { color: var(--green); }
+
+  header.top {
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 18px; padding: 18px 32px;
+    border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 10;
+  }
+  header.top .brand { font-family: "Cormorant Garamond", Georgia, serif; font-size: 30px; font-weight: 700; }
+  header.top .subtitle { color: var(--muted); font-size: 14px; flex-grow: 1; }
+  .crumbs { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+  .crumbs button { background: none; border: none; color: var(--green); font-weight: 600; padding: 0; }
+
+  main { padding: 28px 32px 60px; max-width: 1400px; margin: 0 auto; }
+  .screen { display: none; }
+  .screen.on { display: block; }
+
+  /* ---------- map ---------- */
+  .hero { text-align: center; padding: 10px 0 30px; position: relative; }
+  .hero::before {
+    content: ""; position: absolute; inset: -20px -10% 10px; z-index: -1;
+    background: radial-gradient(ellipse at 50% 55%, var(--bg) 42%, transparent 72%);
+  }
+  .rosette { display: block; margin: 0 auto 16px; }
+  .hero h1 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 42px; font-weight: 600; margin: 0; letter-spacing: .01em; }
+  .hero .ar { font-family: Amiri, serif; color: var(--gold); font-size: 20px; margin-top: 2px; }
+  .hero p { color: var(--muted); font-size: 16px; margin: 12px auto 0; max-width: 560px; line-height: 1.55; }
+  .hero b { color: var(--ink); font-weight: 600; }
+
+  .ribbon { display: flex; justify-content: center; gap: 0; margin: 26px auto 34px; flex-wrap: wrap; }
+  .ribbon .s { display: flex; align-items: center; gap: 9px; padding: 0 20px; border-right: 1px solid var(--line); }
+  .ribbon .s:last-child { border-right: none; }
+  .ribbon .big { font-family: "Cormorant Garamond", Georgia, serif; font-size: 27px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .ribbon .lbl { font-size: 12.5px; color: var(--muted); line-height: 1.35; max-width: 132px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px;
+    text-align: left; display: flex; flex-direction: column; gap: 10px; position: relative;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+  }
+  .card::before, .card::after {
+    content: ""; position: absolute; left: 14px; right: 14px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(169,123,39,.45), transparent);
+  }
+  .card::before { top: 6px; }
+  .card::after { bottom: 6px; }
+  .card .star { position: absolute; top: 14px; right: 14px; opacity: .5; }
+  .card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(23,19,15,.07); }
+  .card h3 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 22px; font-weight: 600; margin: 0; line-height: 1.22; }
+  .card .meta { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--faint); margin-top: auto; }
+  .tag { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; border-radius: 3px; padding: 3px 7px; }
+  .tag.course { color: var(--green); background: #e7efe9; }
+  .tag.unit { color: var(--gold); background: #f4ecda; }
+  .tag.not_yet { color: var(--red); background: #f3e4de; }
+  .ready { margin-left: auto; font-size: 11px; color: var(--gold); font-weight: 600; }
+
+  /* ---------- council ---------- */
+  .council { background: var(--dark); color: var(--dark-ink); border-radius: 16px; padding: 22px 24px; }
+  .council h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 28px; margin: 0; }
+  .controls { display: flex; gap: 10px; align-items: center; margin: 16px 0 20px; flex-wrap: wrap; }
+  .controls button { background: #2d2921; color: var(--dark-ink); border: 1px solid var(--dark-line); border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 600; }
+  .controls button.primary { background: #e0b666; color: var(--dark); border-color: #e0b666; }
+  .controls button:disabled { opacity: .45; cursor: default; }
+  .clock { margin-left: auto; font-size: 13px; color: #9a8f79; display: flex; gap: 18px; }
+  .clock b { color: #e0b666; }
+
+  .lanes { display: grid; grid-template-columns: 250px 1fr; gap: 16px; }
+  .agents { display: flex; flex-direction: column; gap: 8px; }
+  .agent { border: 1px solid var(--dark-line); border-radius: 10px; padding: 10px 12px; background: var(--dark-panel); opacity: .5; transition: opacity .2s, border-color .2s; }
+  .agent.live { opacity: 1; border-color: #e0b666; background: #2b241d; }
+  .agent.finished { opacity: 1; }
+  .agent .nm { font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+  .agent .mandate { font-size: 11.5px; color: #9a8f79; line-height: 1.45; margin-top: 3px; }
+  .agent .meta { font-size: 10.5px; color: #7a7264; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .agent .meta span { border: 1px solid var(--dark-line); border-radius: 4px; padding: 1px 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #4a4438; }
+  .agent.live .dot { background: #e0b666; animation: pulse 1s infinite; }
+  .agent.finished .dot { background: #7faa8f; }
+  @keyframes pulse { 50% { opacity: .3; } }
+
+  .stream { background: var(--dark-panel); border: 1px solid var(--dark-line); border-radius: 12px; padding: 14px 16px; height: 460px; overflow-y: auto; }
+  .ev { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px solid #2a251e; animation: slide .25s ease; }
+  @keyframes slide { from { opacity: 0; transform: translateY(6px); } }
+  .ev .t { font-size: 11px; color: #6f6759; width: 46px; flex-shrink: 0; padding-top: 2px; }
+  .ev .who { font-size: 11.5px; font-weight: 700; width: 92px; flex-shrink: 0; padding-top: 2px; }
+  .ev .msg { font-size: 13.5px; line-height: 1.5; color: #e6ddc9; }
+  .ev .kind { font-size: 10px; letter-spacing: .05em; text-transform: uppercase; border-radius: 4px; padding: 1px 6px; margin-right: 6px; }
+  .k-strike { background: #4a2420; color: #f0a99a; } .k-objection { background: #4a3c1c; color: #ecd08a; }
+  .k-cut { background: #3a3325; color: #d8c79a; } .k-done { background: #23402f; color: #9fd3b6; }
+  .k-gap { background: #402c1c; color: #e8b98a; } .k-narrow { background: #2c3340; color: #a8c2e0; }
+
+  /* ---------- syllabus ---------- */
+  .syl { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 30px 34px; }
+  .syl h1 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 40px; font-weight: 700; margin: 6px 0 12px; line-height: 1.1; }
+  .byline { display: flex; gap: 34px; padding: 18px 0; border-top: 1px solid #ece4d3; border-bottom: 1px solid #ece4d3; margin: 18px 0 24px; }
+  .byline .k { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .byline .v { font-size: 16px; font-weight: 600; margin-top: 4px; }
+  .unit { border-top: 1px solid #ece4d3; padding: 22px 0; }
+  .unit:first-of-type { border-top: none; }
+  .unit .wk { font-family: "Cormorant Garamond", Georgia, serif; font-size: 20px; font-weight: 700; color: var(--red); }
+  .unit h3 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 26px; font-weight: 600; margin: 2px 0 12px; }
+  .obj { font-size: 14.5px; color: var(--muted); line-height: 1.6; margin: 4px 0 4px 18px; }
+  .reading { display: flex; gap: 12px; margin-top: 14px; }
+  .src { flex-shrink: 0; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; border: 1px solid currentColor; border-radius: 999px; padding: 3px 8px; height: fit-content; margin-top: 2px; }
+  .src.shelf { color: var(--green); } .src.outside { color: var(--red); }
+  .reading .ti { font-size: 15.5px; font-weight: 600; }
+  .reading .sub { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+  .note { background: #f0ece0; border-radius: 8px; padding: 11px 14px; margin-top: 8px; }
+  .note .lbl { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+  .note .q { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; font-size: 17px; color: #3d372c; margin-top: 5px; line-height: 1.5; }
+  .disagree { background: #f7f3e8; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-top: 16px; }
+  .disagree .lbl { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+  .disagree p { font-size: 14.5px; color: #514937; line-height: 1.6; margin: 6px 0 0; }
+  .after { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .box { background: #efe8da; border-radius: 12px; padding: 18px 20px; }
+  .box h4 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 21px; margin: 0 0 10px; font-weight: 600; }
+  .box p, .box li { font-size: 14px; color: #514937; line-height: 1.6; }
+  .struck li { margin-bottom: 8px; list-style: none; }
+  .struck .st { text-decoration: line-through; color: var(--muted); }
+  .struck .by { font-weight: 700; color: var(--red); font-size: 12.5px; }
+  .empty { color: var(--faint); font-size: 14px; padding: 40px; text-align: center; }
+  .banner { background: #ece4d3; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; font-size: 13.5px; color: #514937; margin-bottom: 20px; display: flex; gap: 12px; }
+  .banner b { color: var(--red); letter-spacing: .06em; text-transform: uppercase; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">Majlis</div>
+  <div class="subtitle">A council of agents reads one library and drafts the syllabus.</div>
+  <div class="crumbs" id="crumbs"></div>
+</header>
+
+<main>
+
+<!-- ============ MAP ============ -->
+<section id="screen-map" class="screen on">
+  <div class="hero">
+    <svg class="rosette" width="88" height="88" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#a97b27" stroke-width="1.4" stroke-linejoin="round"><path d="M96.0 50.0L17.5 82.5L50.0 4.0L82.5 82.5L4.0 50.0L82.5 17.5L50.0 96.0L17.5 17.5Z" stroke-opacity="0.9"/><path d="M96.0 50.0L50.0 96.0L4.0 50.0L50.0 4.0Z" stroke-opacity="0.45"/><path d="M80.0 50.0L28.8 71.2L50.0 20.0L71.2 71.2L20.0 50.0L71.2 28.8L50.0 80.0L28.8 28.8Z" stroke-opacity="0.7"/><path d="M67.0 50.0L50.0 67.0L33.0 50.0L50.0 33.0Z" stroke-opacity="0.5"/><circle cx="50" cy="50" r="6" stroke-opacity=".6"/></g></svg>
+    <h1>Sixteen courses, found in one bookshelf</h1>
+    <div class="ar">مجلس</div>
+    <p id="heroLine"></p>
+  </div>
+  <div class="ribbon" id="ribbon"></div>
+  <div class="grid" id="mapGrid"></div>
+</section>
+
+<!-- ============ COUNCIL ============ -->
+<section id="screen-council" class="screen">
+  <div class="council">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;">
+      <h2 id="councilTitle"></h2>
+      <div style="font-size:12px;color:#9a8f79" id="councilMode"></div>
+    </div>
+    <div class="controls">
+      <button id="btnPlay" class="primary">▶ Play</button>
+      <button id="btnSpeed">4×</button>
+      <button id="btnSyl" style="display:none">Syllabus →</button>
+      <button id="btnEnd">Skip to syllabus →</button>
+      <div class="clock">
+        <div>elapsed <b id="cElapsed">0.0s</b></div>
+        <div>cost <b id="cCost">$0.00</b></div>
+        <div>proposed <b id="cProposed">0</b></div>
+        <div>struck <b id="cStruck">0</b></div>
+      </div>
+    </div>
+    <div class="lanes">
+      <div class="agents" id="agents"></div>
+      <div class="stream" id="stream"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SYLLABUS ============ -->
+<section id="screen-syllabus" class="screen">
+  <div class="syl" id="syl"></div>
+</section>
+
+</main>
+
+<script>
+const AGENTS = [
+  { id:"lead",       name:"Lead",          model:"Opus 5",   tools:"shelf",              mandate:"Split the subject into threads; later reconcile, order and write objectives" },
+  { id:"researcher", name:"Researchers ×N",model:"Sonnet 5", tools:"shelf + web search", mandate:"One per thread, in parallel: propose readings and name gaps" },
+  { id:"isnad",      name:"Isnad",         model:"Opus 5",   tools:"web search",         mandate:"Verify every claim about what a book covers; strike what it can't confirm" },
+  { id:"counter",    name:"Counter-reader",model:"Sonnet 5", tools:"web search",         mandate:"Whose account is missing? Propose at most one addition" },
+  { id:"realist",    name:"Realist",       model:"Sonnet 5", tools:"—",                  mandate:"Length, order, entry point: can a person read this in six weeks?" },
+  { id:"audit",      name:"Audit",         model:"code",     tools:"—",                  mandate:"Every reading ships or has a recorded reason; quoted notes must be her words" },
+];
+const SPEEDS = [1, 4, 10, 40];
+
+let MAP = null, RUNS = [], run = null, timer = null, speed = 4, cursor = 0, playing = false, tl = [];
+const MAX_GAP = 4;   // seconds of silence to show before skipping ahead
+
+// Real runs have long thinking gaps (the lead takes 47s before it says anything).
+// Replay keeps the real clock but compresses dead air, so the view never looks stalled.
+function timeline(events) {
+  let shown = 0, last = 0;
+  return events.map(e => {
+    shown += Math.min(e.at - last, MAX_GAP);
+    last = e.at;
+    return { ...e, showAt: shown };
+  });
+}
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
+
+async function boot() {
+  [MAP, RUNS] = await Promise.all([
+    fetch("../data/map.json").then(r => r.json()),
+    fetch("runs.json").then(r => r.json()).catch(() => []),
+  ]);
+  drawMap();
+  show("map");
+}
+
+function show(name, subject) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  $("screen-" + name).classList.add("on");
+  const crumbs = [`<button onclick="show('map')">The map</button>`];
+  if (name !== "map" && subject) crumbs.push(`<span>›</span><span>${esc(subject)}</span>`);
+  $("crumbs").innerHTML = crumbs.join(" ");
+  window.scrollTo({ top: 0 });
+}
+
+/* ---------------- map ---------------- */
+function drawMap() {
+  const subjects = MAP.subjects;
+  const withRun = new Set(RUNS.map(r => r.subject));
+  const n = (v) => subjects.filter(s => s.verdict === v).length;
+
+  $("heroLine").innerHTML = `A council of agents read <b>837 books</b> from one Goodreads export — ratings, reviews, and the 470 nobody has opened yet — and worked out which subjects this library could actually teach.`;
+
+  $("ribbon").innerHTML = [
+    ["837", "books exported from Goodreads"],
+    ["756", "catalogued by subject, theme and mood"],
+    ["16", "candidate courses proposed in one pass"],
+    [`${n("course")}`, "judged deep enough to teach"],
+  ].map(([big, lbl]) => `<div class="s"><div class="big">${big}</div><div class="lbl">${lbl}</div></div>`).join("");
+
+  $("mapGrid").innerHTML = subjects.map((s, i) => `
+    <button class="card" onclick="openSubject(${i})">
+      <svg class="star" width="15" height="15" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#a97b27" stroke-width="5"><path d="M94.0 50.0L18.9 81.1L50.0 6.0L81.1 81.1L6.0 50.0L81.1 18.9L50.0 94.0L18.9 18.9Z"/></g></svg>
+      <h3 style="padding-right:22px">${esc(s.name)}</h3>
+      <div class="meta">
+        <span class="tag ${s.verdict}">${s.verdict.replace("_", " ")}</span>
+        <span>${s.books} books · ${s.read} read</span>
+        ${withRun.has(s.name) ? '<span class="ready">● run ready</span>' : ""}
+      </div>
+    </button>`).join("");
+}
+
+async function openSubject(i) {
+  const subject = MAP.subjects[i];
+  const match = RUNS.find(r => r.subject === subject.name);
+  if (!match) {
+    show("council", subject.name);
+    $("councilTitle").textContent = subject.name;
+    $("councilMode").textContent = "no recorded run";
+    $("stream").innerHTML = `<div class="empty">No council run recorded for this subject yet.<br><br>With the server running, this is where the live run would start.</div>`;
+    $("agents").innerHTML = "";
+    return;
+  }
+  run = await fetch(`../runs/${match.slug}.json`).then(r => r.json());
+  show("council", subject.name);
+  $("councilTitle").textContent = run.syllabus.course_title || subject.name;
+  $("councilMode").textContent = `recorded run · ${run.events.length} events · ${run.seconds}s · $${run.cost_usd.toFixed(2)} · lead ${run.models.lead}, workers ${run.models.workers}`;
+  tl = timeline(run.events);
+  resetCouncil();
+  play();
+}
+
+/* ---------------- council replay ---------------- */
+function resetCouncil() {
+  cursor = 0; playing = false; clearInterval(timer);
+  $("stream").innerHTML = "";
+  $("cElapsed").textContent = "0.0s"; $("cCost").textContent = "$0.00";
+  $("cProposed").textContent = "0"; $("cStruck").textContent = "0";
+  $("agents").innerHTML = AGENTS.map(a => `<div class="agent" id="ag-${a.id}">
+      <div class="nm">${a.name}<span class="dot"></span></div>
+      <div class="mandate">${a.mandate}</div>
+      <div class="meta"><span>${a.model}</span><span>${a.tools}</span></div>
+    </div>`).join("");
+}
+
+function play() {
+  if (!run) return;
+  playing = true; $("btnPlay").textContent = "❚❚ Pause";
+  clearInterval(timer);
+  const end = tl[tl.length - 1].showAt;
+  let clock = cursor ? tl[cursor - 1].showAt : 0;
+  working(tl[cursor] ? tl[cursor].agent : null);
+  timer = setInterval(() => {
+    clock += 0.1 * speed;
+    const frac = Math.min(1, clock / end);
+    $("cElapsed").textContent = (run.seconds * frac).toFixed(1) + "s";
+    $("cCost").textContent = "$" + (run.cost_usd * frac).toFixed(2);
+    while (cursor < tl.length && tl[cursor].showAt <= clock) emit(tl[cursor++]);
+    working(cursor < tl.length ? tl[cursor].agent : null);
+    if (cursor >= tl.length) {
+      clearInterval(timer); playing = false; $("btnPlay").textContent = "↻ Replay";
+      document.querySelectorAll(".agent").forEach(el => el.classList.remove("live"));
+    }
+  }, 100);
+}
+
+// The agent whose output comes next is the one currently thinking.
+function working(agentId) {
+  document.querySelectorAll(".agent").forEach(el => el.classList.remove("live"));
+  if (agentId) $("ag-" + agentId)?.classList.add("live");
+}
+
+function emit(e) {
+  const stream = $("stream");
+  const agent = AGENTS.find(a => a.id === e.agent);
+  $("ag-" + e.agent)?.classList.add("finished");
+  const kind = ["strike","objection","cut","done","gap","narrow"].includes(e.kind) ? `<span class="kind k-${e.kind}">${e.kind}</span>` : "";
+  stream.insertAdjacentHTML("beforeend",
+    `<div class="ev"><div class="t">${e.at.toFixed(1)}s</div><div class="who">${agent ? agent.name.replace(" ×N","") : e.agent}</div><div class="msg">${kind}${esc(e.text)}</div></div>`);
+  stream.scrollTop = stream.scrollHeight;
+  if (e.kind === "propose") $("cProposed").textContent = String(Number($("cProposed").textContent) + (e.text.match(/,/g) || []).length + 1);
+  if (e.kind === "strike") $("cStruck").textContent = String(Number($("cStruck").textContent) + 1);
+}
+
+$("btnPlay").onclick = () => {
+  if (!run) return;
+  if (playing) { clearInterval(timer); playing = false; $("btnPlay").textContent = "▶ Play"; }
+  else { if (cursor >= tl.length) resetCouncil(); play(); }
+};
+$("btnSpeed").onclick = () => {
+  speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
+  $("btnSpeed").textContent = speed + "×";
+  if (playing) play();
+};
+$("btnSyl").onclick = () => drawSyllabus();
+$("btnEnd").onclick = () => {
+  if (!run) return;
+  clearInterval(timer); playing = false;
+  while (cursor < tl.length) emit(tl[cursor++]);
+  working(null);
+  drawSyllabus();
+};
+
+/* ---------------- syllabus ---------------- */
+function drawSyllabus() {
+  const s = run.syllabus;
+  const shelfCount = s.units.flatMap(u => u.readings).filter(r => r.from_shelf).length;
+  const total = s.units.flatMap(u => u.readings).length;
+  show("syllabus", run.subject);
+  $("syl").innerHTML = `
+    <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Six weeks · about five hours a week</div>
+    <h1>${esc(s.course_title)}</h1>
+    <p style="font-size:17px;color:#514937;line-height:1.6;max-width:860px">${esc(s.description)}</p>
+    <div class="byline">
+      <div><div class="k">Taught by</div><div class="v">Abeer Minhas</div></div>
+      <div><div class="k">Assembled by</div><div class="v">Hudhud and the council</div></div>
+      <div><div class="k">Readings</div><div class="v">${shelfCount} of ${total} from her shelf</div></div>
+      <div><div class="k">This run</div><div class="v">${run.seconds}s · $${run.cost_usd.toFixed(2)}</div></div>
+    </div>
+    ${s.units.map(u => `
+      <div class="unit">
+        <div class="wk">Week ${u.week}</div>
+        <h3>${esc(u.title)}</h3>
+        ${u.objectives.map(o => `<div class="obj">• ${esc(o)}</div>`).join("")}
+        ${u.readings.map(r => `
+          <div class="reading">
+            <span class="src ${r.from_shelf ? "shelf" : "outside"}">${r.from_shelf ? "Her shelf" : "Added"}</span>
+            <div>
+              <div class="ti">${esc(r.title)}</div>
+              <div class="sub">${esc(r.author)} · ${esc(r.assign)} · ~${r.pages}pp</div>
+              ${r.professors_note ? `<div class="note"><div class="lbl">The professor's note</div><div class="q">“${esc(r.professors_note)}”</div></div>` : ""}
+            </div>
+          </div>`).join("")}
+        <div class="disagree"><div class="lbl">Where the sources disagree</div><p>${esc(u.disagreement)}</p></div>
+      </div>`).join("")}
+    <div class="after">
+      <div class="box">
+        <h4>What this syllabus doesn't cover</h4>
+        <p>${esc(s.shortfall) || "—"}</p>
+        ${s.objection ? `<h4 style="margin-top:16px">The counter-reader's objection</h4><p>${esc(s.objection)}</p>` : ""}
+      </div>
+      <div class="box">
+        <h4>Struck by the council</h4>
+        <ul class="struck" style="padding-left:0;margin:0">
+          ${(s.struck || []).map(st => `<li><span class="st">${esc(st.title)}</span> — <span class="by">${esc(st.struck_by)}</span>: ${esc(st.reason)}</li>`).join("") || "<li>Nothing was struck.</li>"}
+        </ul>
+      </div>
+    </div>`;
+}
+
+window.show = show; window.openSubject = openSubject;
+boot();
+</script>
+</body>
+</html>
