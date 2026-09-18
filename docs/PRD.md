@@ -13,35 +13,41 @@
 
 ## 1. Executive summary
 
-Majlis reads a Goodreads library (837 books, 470 of them unread) and works out what subjects it can actually teach. Those subjects become the interface: a map of clickable courses. Click one and a council of agents builds a real 6–8 week syllabus **from the books on the shelf** — units, learning objectives, specific chapters, and a note on where the sources disagree — reaching outside the shelf only for a gap it can name and justify.
+Say you've spent fifteen years reading in corners nobody assigns: West African Sufi scholarship, the private equity takeover of American towns, who gets to tell a war's story. Nobody handed you a curriculum for any of it; you assembled one by accident, one book at a time, and it's sitting on your shelves and in a Goodreads export. You could teach a short course on four or five of these subjects. You'd be good at it. You will almost certainly never do it, because writing one syllabus — deciding the order, picking the chapters, admitting what you're missing — is a week of evenings, and you have five subjects and no weeks.
 
-The hard constraint is the point. Anyone can assign the perfect book. Building a course from a fixed, accidental, personal library is harder, more honest, and more useful to the person who owns it.
+Majlis is the teaching assistant for that problem. It reads the library, tells the professor which subjects it can actually carry, and drafts the syllabus: 6–8 weekly units, objectives, specific chapters, and where the sources disagree — built from books already on the shelf, reaching outside it only for a gap it can name. A council of agents does the work in the open, and strikes anything it can't confirm.
+
+The professor stays the professor. Her ratings, her abandoned books, her two-star verdicts and her review notes shape what gets assigned, and appear in the syllabus in her own words. The machine does the week of evenings.
 
 ## 2. Problem
 
-Two problems, one product.
+**The knowledge exists and stays stuck.** A serious reader accumulates something like expertise in three or four odd subjects. It lives as a pile of books, a column of star ratings, and a few hundred words of opinion written at midnight. Turning that into something another person could learn from means sequencing it, choosing what to skip, and being honest about the holes — and that work is slow enough that it doesn't happen. The unread half of the shelf makes it worse: 470 books bought with intent, never turned into anything.
 
-**For the reader:** 470 unread books is not a library, it's a guilt pile. There's no way to see what you've accumulated as a body of knowledge, and no way to turn it into something you could actually work through. "What should I read next?" is answered everywhere; "what could these books teach me, in what order?" is answered nowhere.
+**The obvious shortcut doesn't work.** Ask a chatbot for a syllabus and you get a plausible one in seconds: books that don't exist, chapters that don't say what it claims, paywalled articles, no order, and no relationship to the books you already own and have opinions about. It doesn't know you gave that one two stars, or that you abandoned this one on page 200 and were right to.
 
-**For the syllabus:** ask a chatbot for a reading list and you get a plausible one in seconds, containing books that don't exist, sitting behind paywalls, in no particular order. Nothing checks the work and nothing plans it.
+**So the job is acceleration, not replacement.** The professor's taste, ratings and notes are the input that makes the output worth reading; the slow assembly work is what gets handed off.
 
 ## 3. Users
 
 | User | Job to be done | Needs |
 |---|---|---|
-| **The shelf's owner** (primary) | "I own all these books. What can they teach me, and where do I start?" | An honest map of their own library, and a course they can start tonight from books already in the house |
+| **The professor** (primary; today, Abeer) | "I've read enough to teach this. Draft the syllabus I don't have the evenings to write." | A first draft good enough to argue with: right subjects, right order, real chapters, honest about gaps — with her own judgments carried through |
 | **Hiring manager on Abeer's portfolio** (primary) | "Can this person design and reason about a multi-agent system, or only talk about one?" | To understand it in five seconds, see the council work, and poke at it |
 | **A visitor who reads** (secondary) | "What would this person's library teach me?" | Something browsable and opinionated, with no setup |
 
-Designed for the shelf's owner, instrumented for the hiring manager. Where they conflict: the owner wins on output quality, the hiring manager wins on transparency.
+Designed for the professor, instrumented for the hiring manager. Where they conflict: the professor wins on output quality, the hiring manager wins on transparency.
+
+**The professor is a role, not a person.** Today it's filled by Abeer and her export. The data the role needs — books, ratings, optional reviews, read/unread/abandoned — is exactly what any Goodreads export contains, so someone else's library could fill it later (§20). Nothing in v1 should assume the professor is Abeer.
 
 ## 4. Product concept
 
-**Phase 1 — the map (precomputed, free, instant).** A cartographer pass clusters the shelf by subject and judges what each cluster could support: a full course, a short unit, or nothing yet. The landing page is that map: *Colonialism and empire (31 books) · Sufism and Islamic thought (42) · Capitalism and its critics (29) · Grief and memoir (14) · Artificial intelligence (12)*, each with a verdict on whether the shelf can carry it.
+**Phase 1 — the map (precomputed, free, instant).** A cartographer pass clusters the shelf by subject and judges what each cluster could support: a full course, a short unit, or nothing yet. This is the answer to "which of my subjects am I actually qualified to teach from what I own?" The landing page is that map: *Sufism and Islamic thought (89 books) · Capitalism and its critics (62) · Colonialism and empire (60) · Grief, trauma and healing (34) · Women, patriarchy and the body (31) · Palestine (8, not yet)*, each with a verdict on whether the shelf can carry it.
 
 **Phase 2 — the council (run offline, replayed on click).** Each subject's syllabus is produced by a council run that is recorded step by step: threads opening, researchers reporting, Isnad striking claims it can't confirm, the counter-reader naming what the shelf is missing, the realist reordering. Choosing a subject replays that recording at readable speed — the visitor watches the argument that produced their syllabus, and can skip to the result. Replay is free and instant; the run behind it was real.
 
-**Phase 3 — the syllabus.** Units with objectives, assigned chapters from books on the shelf with estimated reading time, where the sources disagree, and — where the shelf falls short — a named gap with at most one outside addition per unit, labeled and linked to somewhere it can be obtained for free or cheaply.
+**Phase 3 — the syllabus.** Units with objectives, assigned chapters from books on the shelf with estimated reading time, where the sources disagree, and — where the shelf falls short — a named gap with at most one outside addition per unit, labeled and linked to somewhere it can be obtained for free or cheaply. Where the professor has written about a book, her note appears under the assignment, in her words and attributed to her; where she abandoned one or rated it low, that verdict shapes what gets assigned and how much of it.
+
+**The professor's judgments are inputs, not decoration:** a two-star book is struck rather than assigned, an abandoned book may be assigned one chapter instead of the whole thing, and a five-star book with a note is a natural anchor for a unit.
 
 **The refusal is a feature.** "Your shelf covers four of six units; the hole is the economics" is a better answer than a padded syllabus, and the map says so before you click.
 
@@ -67,6 +73,8 @@ Designed for the shelf's owner, instrumented for the hiring manager. Where they 
 |---|---|---|
 | Fidelity | Assigned chapters that exist and cover what the syllabus claims | 100% shipped; ≥95% caught before shipping |
 | Constraint | Assigned readings that come from the shelf | ≥80% per syllabus |
+| Voice | Units anchored on a book the professor rated or reviewed | ≥60% |
+| Acceleration | Professor's verdict on a first draft: "worth arguing with" rather than "start over" | ≥4 of 5 subjects |
 | Honesty | Subjects where the shelf is thin and the council says so instead of padding | 100% |
 | Access | Outside additions obtainable without a university library | 100% |
 | Usefulness | Units whose estimated workload fits the stated weekly budget | ≥90% |
@@ -98,6 +106,8 @@ The wedge: **your own library, read as a curriculum**, with the checking shown r
 |---|---|---|
 | **Cartographer** | Cluster the shelf into candidate subjects; name each; judge whether it can support a course, a unit, or nothing yet; describe the shape of what's there | shelf data |
 
+The council is convened by **Hudhud**, the assistant the professor sees — the hoopoe who carries word between courts in the story of Sulayman. Hudhud is the name on the page; the agents below are its members.
+
 **On a click:**
 
 | Agent | Mandate | Tools | Runs |
@@ -116,7 +126,13 @@ Named for the *isnad*, the chain of transmission classical scholars used to judg
 
 ## 9. Source and assignment rules
 
-- **The shelf is the corpus.** Every book on it is fair game: read, unread, abandoned. Abeer's own review, where one exists, can inform a unit but is never presented as scholarship.
+- **The shelf is the corpus.** Every book on it is fair game: read, unread, abandoned.
+- **The professor's judgments steer the syllabus**, and are the one input no other tool has:
+  - a 4–5 star book with a written note is a natural anchor for a unit;
+  - a 1–2 star book is struck unless nothing else covers the thread, and the reason is shown;
+  - an abandoned book may be assigned in part (one chapter) rather than whole, citing her verdict;
+  - her note appears under the assignment, in her words, attributed to her — never rewritten, never presented as scholarship, and never invented where she wrote nothing.
+- **Reviews are optional.** Most books have a rating and no note; the syllabus must read well with ratings alone.
 - **Assign parts, not books:** a chapter or section, with estimated reading time.
 - **Chapter claims must be verified.** A researcher's "chapter 4 covers the Mahdist revolt" is a hypothesis until Isnad confirms it. Unconfirmed claims are struck, not softened. Where a book's structure can't be established, it may still be assigned as a whole-book reading, marked as such.
 - **Outside additions:** at most one per unit, only against a named gap, and only if obtainable without a university library (open access, in print, common in public libraries, freely streamable, public domain). Labeled "not on the shelf" with a link.
