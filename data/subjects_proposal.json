@@ -1,0 +1,409 @@
+{
+  "subjects": [
+    {
+      "name": "Technique and Attention: The Critique of Technological Society",
+      "description": "The tradition that asks not whether a technology works but what it does to human ends — from Ellul and Mumford to attention economies and AI ethics.",
+      "themes": [
+        "technique",
+        "autonomy of technology",
+        "critique of technology",
+        "megatechnology",
+        "megamachine",
+        "attention",
+        "distraction",
+        "solitude",
+        "entertainment culture",
+        "conversation",
+        "refusal",
+        "human values",
+        "algorithms",
+        "automation"
+      ],
+      "genres": [
+        "media criticism",
+        "social criticism",
+        "technology",
+        "philosophy"
+      ],
+      "why_this_library": "Two Elluls, Mumford, Mander and Postman anchor a lineage that then runs forward into Turkle, Odell, Newport, Han, Finn and Vallor."
+    },
+    {
+      "name": "Platform Capitalism: Rent, Data, and the New Monopolies",
+      "description": "How digital platforms extract value from users, workers, and markets — and what antitrust, labor, and abolitionist responses look like.",
+      "themes": [
+        "platform monopolies",
+        "big tech",
+        "big tech platforms",
+        "monopoly power",
+        "antitrust",
+        "rent extraction",
+        "data extraction",
+        "digital economy",
+        "invisible labor",
+        "gig economy",
+        "algorithmic bias",
+        "surveillance",
+        "tech labor",
+        "platform accountability"
+      ],
+      "genres": [
+        "technology",
+        "economics",
+        "cultural criticism"
+      ],
+      "why_this_library": "Doctorow, Varoufakis, Srnicek, Larson, Tim Wu, Gray, Noble and two insider tech memoirs let political economy and whistleblower testimony argue with each other."
+    },
+    {
+      "name": "Trauma, the Body, and the Therapeutic Society",
+      "description": "What trauma science claims about bodies and healing, set against critiques of diagnosis, therapy culture, and the globalized psyche.",
+      "themes": [
+        "trauma",
+        "somatic healing",
+        "mind-body connection",
+        "nervous system",
+        "therapy culture",
+        "therapeutic culture",
+        "ptsd",
+        "intergenerational trauma",
+        "historical trauma",
+        "psychiatry",
+        "diagnosis",
+        "stress resilience",
+        "chronic illness",
+        "emotional repression"
+      ],
+      "genres": [
+        "psychology",
+        "health",
+        "psychoanalysis"
+      ],
+      "why_this_library": "Van der Kolk, Levine, Maté and Stanley are shelved with their sharpest opponents — Shrier, Rieff, Watters, Chapman, Insel — making the course an argument, not a treatment plan."
+    },
+    {
+      "name": "Abolition as Method: Policing, Prisons, and Transformative Justice",
+      "description": "The abolitionist tradition as analysis and practice — policing, carceral feminism, community accountability, and the funding of activism itself.",
+      "themes": [
+        "abolition",
+        "prison abolition",
+        "transformative justice",
+        "policing",
+        "state violence",
+        "racial capitalism",
+        "community accountability",
+        "organizing",
+        "carceral feminism",
+        "criminalization",
+        "incarceration",
+        "nonprofit industrial complex",
+        "mutual aid"
+      ],
+      "genres": [
+        "criminal justice",
+        "essays",
+        "anthology"
+      ],
+      "why_this_library": "Vitale, Kaba, Gilmore, Davis, Dixon, Thuma, Benjamin and INCITE! are here in enough depth to cover strategy and internal critique, not just slogans."
+    },
+    {
+      "name": "The Science of the Heart: Sufi Psychology and the Classical Islamic Inner Life",
+      "description": "A close reading of classical and modern Sufi texts on the soul, the ego, divine love, and the disciplines of purification.",
+      "themes": [
+        "sufism",
+        "divine love",
+        "purification of the heart",
+        "spiritual discipline",
+        "self-knowledge",
+        "nafs",
+        "dhikr",
+        "mystical poetry",
+        "tawhid",
+        "sufi metaphysics"
+      ],
+      "genres": [
+        "islamic spirituality",
+        "sufism",
+        "classical islamic literature",
+        "classic religious text",
+        "aphorisms"
+      ],
+      "why_this_library": "It holds primary texts (al-Ghazali, al-Jilani, Ibn ʿArabi, Ibn ʿAta' Allah) alongside their best modern interpreters (Chittick, Schimmel, Nasr), which almost no general collection does."
+    },
+    {
+      "name": "Rereading Scripture: Islamic Feminism and Religious Authority",
+      "description": "How women scholars and reformers have contested patriarchal readings of Qur'an, hadith, and law — and how veiling became a global political symbol.",
+      "themes": [
+        "quranic interpretation",
+        "quranic exegesis",
+        "quranic hermeneutics",
+        "patriarchy",
+        "women's rights",
+        "veiling",
+        "islamic feminism",
+        "gender and authority",
+        "hadith criticism",
+        "women in islam",
+        "gender and religion",
+        "islamic jurisprudence"
+      ],
+      "genres": [
+        "islamic studies",
+        "gender studies",
+        "feminism"
+      ],
+      "why_this_library": "Wadud, Barlas, Mernissi, Lamrabet, Leila Ahmed, Abou El Fadl, Nadwi and Joan Scott are all here together, so the debate can be staged from inside rather than described from outside."
+    },
+    {
+      "name": "Why Civilizations Come Apart",
+      "description": "Competing explanations of societal breakdown — elite overproduction, plague and climate, environmental mismanagement, and violence as the great leveller.",
+      "themes": [
+        "elite overproduction",
+        "cliodynamics",
+        "cycles of instability",
+        "state collapse",
+        "imperial collapse",
+        "societal decline",
+        "rise and fall of civilizations",
+        "environmental collapse",
+        "pandemics",
+        "plague",
+        "disease and society",
+        "resource management",
+        "inequality"
+      ],
+      "genres": [
+        "ancient history",
+        "social science",
+        "political science"
+      ],
+      "why_this_library": "Three Turchin volumes plus Toynbee, Scheidel, Harper, Rosen and two Diamonds turn a vague anxiety into a genuine methodological argument."
+    },
+    {
+      "name": "Palestine in Prose, Poetry, and Testimony",
+      "description": "Diaries, novels, poems, and polemics on siege, erasure, exile, and the problem of representing occupation.",
+      "themes": [
+        "palestinian identity",
+        "palestinian displacement",
+        "occupation",
+        "nakba",
+        "erasure",
+        "exile",
+        "siege",
+        "palestine",
+        "resistance",
+        "displacement",
+        "israel-palestine conflict"
+      ],
+      "genres": [
+        "palestinian literature",
+        "political fiction",
+        "memoir/diary",
+        "poetry"
+      ],
+      "why_this_library": "Abu Saif, Azem, Zaher, Abulhawa, Kanazi, Peled and Davis together move between speculative fiction, war diary, verse and abolitionist solidarity."
+    },
+    {
+      "name": "Scheherazade's Inheritance: Arabic Storytelling and Its Modern Retellings",
+      "description": "The Nights, the Arabic epic, and the jinn tradition — plus the contemporary fantasy and criticism that rewrite them.",
+      "themes": [
+        "storytelling",
+        "jinn",
+        "djinn mythology",
+        "arabic literature",
+        "arabic epic",
+        "narrative tradition",
+        "folklore",
+        "magic and demons",
+        "warrior women",
+        "wish fulfillment",
+        "orientalism",
+        "translation",
+        "enchantment"
+      ],
+      "genres": [
+        "epic",
+        "fairy tale",
+        "fairy tale retellings",
+        "historical fantasy",
+        "literary criticism"
+      ],
+      "why_this_library": "Kilito's criticism, a new Aladdin, the Princess Fatima epic and Chakraborty/Abdullah/Karchmar novels let theory and pulp be taught in the same week."
+    },
+    {
+      "name": "Ink and Sand: Islam and Scholarship in West Africa",
+      "description": "The intellectual, spiritual, and political history of Muslim West Africa, from manuscript libraries and embodied Qur'anic pedagogy to Sufi resistance under colonial rule.",
+      "themes": [
+        "west africa",
+        "islamic scholarship",
+        "islamic education",
+        "embodied knowledge",
+        "muridiyya",
+        "colonial resistance",
+        "spiritual authority",
+        "quran memorization",
+        "west african intellectual history",
+        "islam in africa",
+        "ifa divination"
+      ],
+      "genres": [
+        "african studies",
+        "islamic studies",
+        "primary source",
+        "anthology"
+      ],
+      "why_this_library": "Ware (twice), Kane, Babou, Kimball, Ogunnaike, Diouf and Ibn Battuta form a coherent syllabus on a region usually reduced to a footnote in Islamic studies."
+    },
+    {
+      "name": "Indigenous Knowledge, Healing, and Land",
+      "description": "Indigenous epistemologies and healing practices as intellectual traditions, and what colonization did to land, medicine, and memory.",
+      "themes": [
+        "indigenous healing",
+        "indigenous knowledge",
+        "ceremony",
+        "narrative medicine",
+        "storytelling and healing",
+        "settler colonialism",
+        "land and kinship",
+        "native american history",
+        "indigenous science",
+        "historical trauma",
+        "decolonizing therapy",
+        "indigenous sovereignty",
+        "land dispossession"
+      ],
+      "genres": [
+        "indigenous studies",
+        "health",
+        "nature writing"
+      ],
+      "why_this_library": "Four Mehl-Madrona titles plus Linklater, Duran, Hernandez, Yunkaporta, Charleston, Black Elk and The Red Deal make healing, not just history, the centre of gravity."
+    },
+    {
+      "name": "Knowledge Under Empire: Whose Science, Whose Reason?",
+      "description": "Six weeks on how knowledge gets made, transmitted, and ranked — from the Greek-Arabic translation movement to decolonial epistemology and the sociology of laboratories.",
+      "themes": [
+        "transmission of knowledge",
+        "knowledge production",
+        "epistemology",
+        "decolonizing knowledge",
+        "islam and science",
+        "islamic epistemology",
+        "orientalism",
+        "coloniality",
+        "modernity critique",
+        "classification of knowledge",
+        "comparative epistemology",
+        "european universalism",
+        "relativism"
+      ],
+      "genres": [
+        "history of science",
+        "philosophy of science",
+        "postcolonial theory",
+        "academic"
+      ],
+      "why_this_library": "It pairs the Islamic history-of-science shelf (Saliba, Dallal, Bakar, Freely) with Feyerabend, Knorr Cetina, Mignolo, Chakrabarty and Hallaq — a genuinely rare combination."
+    },
+    {
+      "name": "The Politics of the Terraces: Football, Power, and the Crowd",
+      "description": "Football as a laboratory for nationalism, dictatorship, commercialization, and organized fan resistance.",
+      "themes": [
+        "football and politics",
+        "football fandom",
+        "ultras subculture",
+        "fan culture",
+        "football culture",
+        "commercialization of football",
+        "fan activism",
+        "radical politics",
+        "masculinity"
+      ],
+      "genres": [
+        "sports",
+        "travel writing",
+        "journalism"
+      ],
+      "why_this_library": "Four books by four authors — Montague, Kuhn, Kuper, Foer — give a full spectrum from ultras ethnography to anarchist fan politics, which is an unusual shelf to own."
+    },
+    {
+      "name": "After Growth: Degrowth, Ecosocialism, and Climate Politics",
+      "description": "The anti-growth turn in ecological thought, from degrowth economics and ecofeminism to sabotage, indigenous critique, and climate justice.",
+      "themes": [
+        "degrowth",
+        "capitalism critique",
+        "climate crisis",
+        "ecology",
+        "ecofeminism",
+        "extractivism",
+        "commons",
+        "climate justice",
+        "climate activism",
+        "ecological limits",
+        "planetary boundaries",
+        "sabotage",
+        "rewilding"
+      ],
+      "genres": [
+        "environmental nonfiction",
+        "environment",
+        "political theory",
+        "marxism"
+      ],
+      "why_this_library": "Saitō, Hickel, Löwy, Raworth, Shiva, Malm and Ghosh sit beside Haraway and Fresh Banana Leaves, so the economics is constantly interrupted by cosmology and tactics."
+    },
+    {
+      "name": "Reading the City: Gentrification, Design, and the Right to Stay",
+      "description": "Why neighbourhoods get emptied, burned, financed, and redesigned — and what humane density and social infrastructure would require instead.",
+      "themes": [
+        "gentrification",
+        "housing policy",
+        "city planning",
+        "city design",
+        "walkability",
+        "car dependency",
+        "neighbourhood design",
+        "neighborhood life",
+        "social infrastructure",
+        "redlining",
+        "urban decline",
+        "mortgage fraud",
+        "urban regeneration",
+        "density",
+        "human scale",
+        "mobility"
+      ],
+      "genres": [
+        "urbanism",
+        "urban studies",
+        "urban planning",
+        "architecture"
+      ],
+      "why_this_library": "Jacobs, Speck, Sim and Hajer on design sit next to Moskowitz, Ansfield, Horn and a gentrification thriller — the aesthetic and the extractive read together."
+    },
+    {
+      "name": "Who Owns the Past? Archaeology, Heritage, and Nationalism",
+      "description": "How digs, museums, and world-heritage bureaucracies turned antiquity into political property across Egypt, Iraq, and the colonial metropole.",
+      "themes": [
+        "cultural heritage",
+        "antiquities",
+        "antiquities trade",
+        "colonial plunder",
+        "nation building",
+        "politics of the past",
+        "museums",
+        "restitution",
+        "world heritage",
+        "egyptology",
+        "tomb robbing",
+        "display and power",
+        "archaeological dig"
+      ],
+      "genres": [
+        "archaeology",
+        "art history",
+        "academic nonfiction",
+        "illustrated nonfiction"
+      ],
+      "why_this_library": "Two Meskell books plus Bernhardsson, Fagan, Procter, Al-Rashid and even Christie's dig mystery make the politics of excavation a subject rather than a sidebar."
+    }
+  ]
+}
