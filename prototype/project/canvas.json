@@ -1,0 +1,45 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-09-18T15:40:00Z" },
+  "title": "Majlis prototype",
+  "launch": { "view": "focused", "file": "Main.dc.html" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1280, "h": 1180, "title": "1 · The map: what this shelf can teach", "is_interactive": true },
+    "Council.dc.html": { "x": 1360, "y": 0, "w": 1280, "h": 1180, "title": "2 · The council at work", "is_interactive": true },
+    "Syllabus.dc.html": { "x": 2720, "y": 0, "w": 1280, "h": 2040, "title": "3 · The syllabus", "is_interactive": true },
+    "Thin.dc.html": { "x": 4080, "y": 0, "w": 1280, "h": 900, "title": "4 · When the shelf can't teach it", "is_interactive": true }
+  },
+  "order": ["Main.dc.html", "Council.dc.html", "Syllabus.dc.html", "Thin.dc.html"],
+  "notes": {
+    "flow": {
+      "x": 0,
+      "y": -260,
+      "text": "Majlis — click through: map → council → syllabus",
+      "kind": "title1",
+      "maxW": 5360
+    },
+    "n1": {
+      "x": 0,
+      "y": 1240,
+      "w": 1280,
+      "text": "Real: topics, counts, book titles, ratings, and the professor's review quotes — all from the 837-book Goodreads export. Placeholder: unit titles, objectives, chapter ranges, disagreement notes.",
+      "color": "orange"
+    },
+    "n2": {
+      "x": 2720,
+      "y": 2100,
+      "w": 1280,
+      "text": "The professor's notes are the part nobody else can copy: her real rating and review, including a two-star verdict and a book she abandoned. Hudhud assigns one chapter of Palo Alto rather than the book, on her evidence.",
+      "color": "green"
+    },
+    "n3": {
+      "x": 4080,
+      "y": 960,
+      "w": 1280,
+      "text": "The refusal screen. Saying \"eight books is a week, not a course\" is the product working, not failing.",
+      "color": "red"
+    }
+  },
+  "designSystems": []
+}

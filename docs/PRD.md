@@ -1,9 +1,11 @@
 # Majlis — AI PRD
 
-*Majlis*: a study assembly. You bring a question; a council of agents researches it, argues about it, and hands you a syllabus.
+*Majlis*: a study assembly. Your bookshelf already contains a dozen courses. A council of agents finds them, argues about them, and writes the syllabus.
 
 **Status:** draft · **Owner:** Abeer Minhas · **Last updated:** 2026-09-18
-**Structure:** strategic foundation → AI-specific requirements → operations. Numbers in §6–§9 are targets to design against, not results; measured values land in `docs/EVAL_RESULTS.md` once §14 runs.
+**Structure:** strategic foundation → AI-specific requirements → operations. Numbers in §6–§11 are targets to design against, not results; measured values land in `docs/EVAL_RESULTS.md`.
+
+**Scope note — v1 is precomputed.** The shelf is analyzed once, and syllabi are generated once, offline. The site serves the map, the finished syllabi, and a replayable recording of the council run that produced each one. Nothing runs when a visitor arrives: no wait, no cost, no abuse surface. Live runs on a visitor's own subject are v2 (§21), and the architecture is built so the same council code serves both.
 
 ---
 
@@ -11,69 +13,78 @@
 
 ## 1. Executive summary
 
-Majlis turns a question ("I want to understand the partition of India") into a real 6–8 week syllabus: units with learning objectives, assigned readings with specific chapters, and a note on where scholars disagree. A council of specialist agents builds it — researchers work threads in parallel, then three reviewers with conflicting mandates attack the draft before a lead reconciles it. Nothing reaches the reader unless it has been verified to exist and to be obtainable without a university library.
+Majlis reads a Goodreads library (837 books, 470 of them unread) and works out what subjects it can actually teach. Those subjects become the interface: a map of clickable courses. Click one and a council of agents builds a real 6–8 week syllabus **from the books on the shelf** — units, learning objectives, specific chapters, and a note on where the sources disagree — reaching outside the shelf only for a gap it can name and justify.
+
+The hard constraint is the point. Anyone can assign the perfect book. Building a course from a fixed, accidental, personal library is harder, more honest, and more useful to the person who owns it.
 
 ## 2. Problem
 
-Ask a chatbot for a reading list on Sudanese history and you get a plausible one in ten seconds. Some of those books don't exist. Several are paywalled. Nothing says what to read first, what the argument between the sources is, or whether someone with a job could finish it.
+Two problems, one product.
 
-Two failures underneath: **nothing checks the work**, and **nothing plans it**. People who want to learn a subject seriously, without enrolling anywhere, have no equivalent of a course.
+**For the reader:** 470 unread books is not a library, it's a guilt pile. There's no way to see what you've accumulated as a body of knowledge, and no way to turn it into something you could actually work through. "What should I read next?" is answered everywhere; "what could these books teach me, in what order?" is answered nowhere.
+
+**For the syllabus:** ask a chatbot for a reading list and you get a plausible one in seconds, containing books that don't exist, sitting behind paywalls, in no particular order. Nothing checks the work and nothing plans it.
 
 ## 3. Users
 
 | User | Job to be done | Needs |
 |---|---|---|
-| **Curious adult, no institutional access** (primary) | "Actually understand X, not skim ten articles about it." | A course they can start tonight, built from things they can get hold of |
-| **Hiring manager on Abeer's portfolio** (primary) | "Can this person design and reason about a multi-agent system, or only talk about one?" | To see the council work, understand it in under a minute, and poke at it |
+| **The shelf's owner** (primary) | "I own all these books. What can they teach me, and where do I start?" | An honest map of their own library, and a course they can start tonight from books already in the house |
+| **Hiring manager on Abeer's portfolio** (primary) | "Can this person design and reason about a multi-agent system, or only talk about one?" | To understand it in five seconds, see the council work, and poke at it |
+| **A visitor who reads** (secondary) | "What would this person's library teach me?" | Something browsable and opinionated, with no setup |
 
-Designed for the learner, instrumented for the hiring manager. Where they conflict: the learner wins on output quality, the hiring manager wins on transparency.
+Designed for the shelf's owner, instrumented for the hiring manager. Where they conflict: the owner wins on output quality, the hiring manager wins on transparency.
 
 ## 4. Product concept
 
-One line in, a syllabus out, with the council's argument visible along the way.
+**Phase 1 — the map (precomputed, free, instant).** A cartographer pass clusters the shelf by subject and judges what each cluster could support: a full course, a short unit, or nothing yet. The landing page is that map: *Colonialism and empire (31 books) · Sufism and Islamic thought (42) · Capitalism and its critics (29) · Grief and memoir (14) · Artificial intelligence (12)*, each with a verdict on whether the shelf can carry it.
 
-- **Landing:** three finished syllabi, one click each, served from cache — instant and free. Most visitors stop here.
-- **Ask:** one line, an optional why-chip (curiosity / an argument I keep losing / a trip I'm taking), a 6 or 8 week toggle.
-- **The council convenes in the open:** threads appear, researchers report, Isnad strikes items with reasons, the counter-reader objects, the realist reorders. Units stream in as they settle.
-- **The syllabus:** units with objectives, readings with access labels, and the live scholarly disagreement. Below it, the struck list. Books already on Abeer's shelf are marked.
-- **Take it:** copy as Markdown, with a link for getting hold of each reading.
+**Phase 2 — the council (run offline, replayed on click).** Each subject's syllabus is produced by a council run that is recorded step by step: threads opening, researchers reporting, Isnad striking claims it can't confirm, the counter-reader naming what the shelf is missing, the realist reordering. Choosing a subject replays that recording at readable speed — the visitor watches the argument that produced their syllabus, and can skip to the result. Replay is free and instant; the run behind it was real.
+
+**Phase 3 — the syllabus.** Units with objectives, assigned chapters from books on the shelf with estimated reading time, where the sources disagree, and — where the shelf falls short — a named gap with at most one outside addition per unit, labeled and linked to somewhere it can be obtained for free or cheaply.
+
+**The refusal is a feature.** "Your shelf covers four of six units; the hole is the economics" is a better answer than a padded syllabus, and the map says so before you click.
 
 ## 5. Goals and non-goals
 
 **Goals**
-- A genuine 6–8 week syllabus, not a reading list.
-- Every assigned item verified to exist and to be obtainable without a university library.
-- The council's reasoning visible, including what it threw away.
-- Evidence that the multi-agent design earns its cost.
+- Turn a personal library into a browsable map of what it can teach.
+- Build genuine 6–8 week syllabi from the shelf, with specific chapters, not book titles.
+- Never claim a book covers something it doesn't.
+- Name gaps instead of hiding them; keep outside additions rare, justified, and obtainable without a university library.
+- Show the council's reasoning, including what it threw away.
+- Prove the multi-agent design earns its cost.
 
 **Non-goals**
-- Not a chatbot, not a general research agent.
-- No assignments, essays, or grading.
-- No accounts, no history, no personalization beyond the question asked.
 - Not a book recommender — that's the Sultan (librarian.abeerminhas.com).
+- Not a general research agent; the shelf is the corpus.
+- No assignments, essays, or grading.
+- No accounts, no uploads in v1 (the shelf is Abeer's; other people's libraries are a later question).
 
 ## 6. Success metrics
 
 | Dimension | Metric | Target |
 |---|---|---|
-| Trust | Assigned items that exist as described | 100% (nothing unverified ships) |
-| Access | Assigned items obtainable without a university library | 100% |
+| Fidelity | Assigned chapters that exist and cover what the syllabus claims | 100% shipped; ≥95% caught before shipping |
+| Constraint | Assigned readings that come from the shelf | ≥80% per syllabus |
+| Honesty | Subjects where the shelf is thin and the council says so instead of padding | 100% |
+| Access | Outside additions obtainable without a university library | 100% |
 | Usefulness | Units whose estimated workload fits the stated weekly budget | ≥90% |
-| Structure | Syllabi with objectives, ordered units, and a disagreement note in every unit | 100% |
 | Architecture | Planted flaws caught by the council vs. a single reviewer agent | Council ahead by a margin that justifies its cost |
-| Demo | Time to first visible unit / full run | ≤15s / ≤60s |
-| Cost | Cost per live run | cents, not dollars |
+| Demo | Time to understand the map / to reach a finished syllabus | ~5s / one click, instant |
+| Cost | Cost per visit (v1) | zero — everything is precomputed |
+| Cost | Cost of a full rebuild (map + all syllabi) | a few dollars, run deliberately |
 
 ## 7. Competitive context
 
 | | What it gives you | What it doesn't |
 |---|---|---|
-| ChatGPT / Claude, asked directly | A plausible list in seconds | No verification, no access check, no sequence, no visible reasoning |
-| Deep-research modes | A long report with citations | A report, not a course; citations checked for existence, not obtainability |
-| Coursera / MOOCs | Real courses, verified | Only where a course exists; not on "how perfume became an industry" |
-| Syllabus archives (e.g. Open Syllabus) | Real syllabi from real courses | Static, institution-shaped, assumes library access |
+| Chatbot, asked directly | A plausible reading list in seconds | No verification, no chapters, no order, and no relationship to books you own |
+| Deep-research modes | A long cited report | A report, not a course; ignores your shelf entirely |
+| Goodreads shelves and tags | What you own, sorted | No structure, no curriculum, no sense of what's teachable |
+| MOOCs, Open Syllabus | Real courses | Only where a course exists; assumes library access; not built from your books |
 
-The wedge: **course structure + obtainability**, with the checking shown rather than claimed.
+The wedge: **your own library, read as a curriculum**, with the checking shown rather than claimed.
 
 ---
 
@@ -81,118 +92,132 @@ The wedge: **course structure + obtainability**, with the checking shown rather 
 
 ## 8. The council
 
+**Offline pass (rebuilt when the shelf changes):**
+
+| Agent | Mandate | Tools |
+|---|---|---|
+| **Cartographer** | Cluster the shelf into candidate subjects; name each; judge whether it can support a course, a unit, or nothing yet; describe the shape of what's there | shelf data |
+
+**On a click:**
+
 | Agent | Mandate | Tools | Runs |
 |---|---|---|---|
-| **Lead** | Split the question into 4–6 threads; later reconcile objections, order units, write objectives | — | twice (open, close) |
-| **Researcher** (one per thread) | Propose candidate readings with a reason and a specific chapter/section | web search | parallel |
-| **Isnad** (verifier) | Does each item exist as described, and can a person without a university get it? Strike what fails | Open Library, web search | parallel with reviewers |
-| **Counter-reader** | Whose account dominates? Demand the missing perspective | web search | parallel |
-| **Realist** | Length, difficulty, sequence, entry points; is this doable in the stated weeks? | — | parallel |
+| **Lead** | Split the subject into 4–6 threads; later reconcile objections, order units, write objectives | shelf search | twice |
+| **Researcher** (one per thread) | Find shelf books for its thread; propose specific chapters with a reason; name a gap when the shelf can't cover the thread | shelf search, book-structure lookup | parallel |
+| **Isnad** (verifier) | Does this book really cover this? Does that chapter exist? Strike what can't be confirmed. For outside additions: does it exist, and can a person without a university get it? | Open Library, web search | parallel |
+| **Counter-reader** | Whose account is missing *from this shelf*? Name the blind spot, and where an outside addition is worth its slot | shelf search, web search | parallel |
+| **Realist** | Length, difficulty, sequence, entry points; is this doable in the stated weeks? | shelf data | parallel |
 
 Named for the *isnad*, the chain of transmission classical scholars used to judge whether a report could be trusted.
 
-**Why a council and not one agent:** the reviewers' mandates conflict — rigor against breadth against feasibility. One agent asked to weigh all three blends them. Treated as a hypothesis to measure (§10), not a claim to put on the page.
+**Why a council and not one agent:** the reviewers' mandates conflict — fidelity against breadth against feasibility. One agent told to weigh all three blends them. A hypothesis to measure (§10), not a claim for the page.
 
-**The lead may decline to convene.** Small or non-subject questions get a short answer instead of a fan-out. Spending 60 seconds and five agents on "three books about bread" is a bug, and how often the lead gets this right is measured.
+**The lead may decline to convene.** Subjects the map marks as thin get a short honest answer, not a fan-out.
 
 ## 9. Source and assignment rules
 
-- **Allowed:** books and chapters, academic articles, primary sources, film/audio/lectures.
-- **Obtainability is a hard requirement:** open access, in print, common in public libraries, freely streamable, or public domain. An item that fails is struck even when it's the best thing on the subject — with a free alternative proposed where one exists.
-- **Nothing unverified ships.** Struck items appear only in the visible scrap heap.
-- **Assign parts, not whole books:** specific chapters or page ranges, with an estimated reading time.
+- **The shelf is the corpus.** Every book on it is fair game: read, unread, abandoned. Abeer's own review, where one exists, can inform a unit but is never presented as scholarship.
+- **Assign parts, not books:** a chapter or section, with estimated reading time.
+- **Chapter claims must be verified.** A researcher's "chapter 4 covers the Mahdist revolt" is a hypothesis until Isnad confirms it. Unconfirmed claims are struck, not softened. Where a book's structure can't be established, it may still be assigned as a whole-book reading, marked as such.
+- **Outside additions:** at most one per unit, only against a named gap, and only if obtainable without a university library (open access, in print, common in public libraries, freely streamable, public domain). Labeled "not on the shelf" with a link.
+- **Nothing unverified ships.** Struck items appear in the visible scrap heap with the reason.
 
 ## 10. Eval framework
 
-Acceptance is measured, not asserted. Two suites, both re-runnable from the repo.
+Two suites, both re-runnable from the repo.
 
 **Suite A — planted flaws.** Draft syllabi seeded with known defects, run through (a) one reviewer agent asked to check everything, (b) the full council.
 
 | Flaw | Should be caught by | Pass threshold |
 |---|---|---|
-| Fabricated book: plausible title, real author | Isnad | ≥95% |
-| Real book, wrong author or year | Isnad | ≥90% |
-| Key reading paywalled, free alternative exists | Isnad | ≥80% |
-| Every source by outsiders to the subject | Counter-reader | ≥80% |
+| Shelf book assigned for a subject it doesn't cover | Isnad | ≥95% |
+| Chapter number or title that doesn't exist in that book | Isnad | ≥90% |
+| Outside addition that doesn't exist, or wrong author | Isnad | ≥95% |
+| Outside addition that's paywalled with a free alternative available | Isnad | ≥80% |
+| Subject carried entirely by one perspective the shelf happens to over-represent | Counter-reader | ≥80% |
 | 4,000 pages presented as six weeks | Realist | ≥90% |
 | Three readings making the same argument | Realist / Lead | ≥70% |
-| **Clean syllabus** (no planted flaw) | nobody | false strikes ≤5% |
+| **Clean syllabus** | nobody | false strikes ≤5% |
 
-**Suite B — end-to-end syllabi.** A fixed set of questions across history, science, craft, and religion. Every assigned item checked by hand once, then graded by an LLM judge whose agreement with those hand checks is reported.
+**Suite B — end-to-end.** A fixed set of subjects drawn from the map, from well-covered (Sufism, colonialism) to deliberately thin (artificial intelligence, grief), plus one the shelf can't support at all.
 
 | Dimension | Measure | Pass |
 |---|---|---|
-| Existence | items that exist as described | 100% |
-| Obtainability | items gettable without a university | 100% |
+| Chapter fidelity | assigned chapters exist and cover the claim (hand-checked) | 100% |
+| Shelf share | readings drawn from the shelf | ≥80% |
+| Gap honesty | thin subjects produce a named gap rather than padding | 100% |
 | Sequence | a reader could follow unit order without gaps | ≥90% of units |
-| Workload honesty | estimated vs. actual pages/runtime | within 25% |
-| Disagreement note | names a real live debate, not a platitude | ≥80% of units |
+| Workload honesty | estimated vs. actual pages | within 25% |
+| Disagreement note | names a real debate, not a platitude | ≥80% of units |
 
-**Also tracked every run:** wall-clock, cost, tokens per agent, searches per researcher, strike rate, and how often the lead declines to convene.
+**Suite C — the map.** Does the cartographer's verdict match reality? For each subject it calls teachable, does the council in fact produce a syllabus meeting Suite B? For each it calls thin, does a forced run confirm it?
+
+**Tracked every run:** wall-clock, cost, tokens per agent, searches, strike rate and reasons, shelf share, gaps named.
 
 ## 11. Guardrails specification
 
 **Input filtering**
-- Question length capped; one question per run.
-- The lead refuses non-subjects, requests for a person's private information, and anything where a wrong curriculum does harm (medical, legal, or safety instructions presented as a course) with a plain explanation.
-- Instructions embedded in fetched pages are data, never commands; researchers pass along findings, not directives.
+- The map's subjects are the primary input; free-text subjects are capped in length and matched against the shelf before any agent runs.
+- Subjects the shelf can't support get an honest refusal, not a syllabus.
+- Instructions found in fetched web pages are data, never commands.
 
 **Output validation**
-- No item reaches a unit without an existence check and an access check.
-- Every assigned reading carries an access label and a link.
-- Unit workload must fall within the stated weekly budget or the realist sends it back (one reconciliation pass, then it ships with a visible warning).
-- No invented quotes or fabricated scholarly positions; disagreement notes must name a source.
+- No reading reaches a unit without a fidelity check (does this book cover this?) and, for outside additions, an existence and access check.
+- Every reading carries: source (shelf / addition), chapter or section, estimated time, and for additions, where to get it.
+- Unit workload must fit the weekly budget or the realist sends it back once; after that it ships with a visible warning.
+- Scholarly positions are attributed to named sources; no invented quotes.
+- Abeer's reviews may be quoted as Abeer's opinion, never as the council's judgment or as scholarship.
 
 **Action boundaries**
-- The council reads the web; it never posts, buys, emails, or downloads files.
-- Search is capped per researcher per run; no unbounded crawling.
-- No user data is stored; questions are not retained after a run.
+- The council reads the shelf and the web; it never posts, buys, emails, or downloads files.
+- Search calls capped per researcher per run.
+- No visitor data stored; questions aren't retained after a run.
 
 **Escalation and confidence**
-- Isnad returns verified / unverified / uncertain. Uncertain is treated as unverified: struck, and shown in the scrap heap with the reason.
-- If a thread returns fewer than two verified items, the lead merges or drops the thread rather than padding it.
-- If fewer than four units survive verification, the run returns a short syllabus and says so, rather than inventing filler.
-- Hard failure (an agent errors or times out): the syllabus ships without that agent's pass, labeled on the page.
+- Isnad returns confirmed / unconfirmed / uncertain; uncertain is treated as unconfirmed.
+- A thread with fewer than two confirmed readings is merged, dropped, or turned into a named gap.
+- Fewer than four surviving units ships a short syllabus that says why.
+- Agent error or timeout ships the syllabus without that pass, labeled.
 
 **Rate and spend**
-- Per-visitor run cap per day; hard daily spend cap; cached examples stay available when the cap is hit.
+- v1 runs nothing for visitors, so there is no per-visit spend or abuse surface. Generation happens offline, under Abeer's hand, with a per-rebuild budget.
+- v2 adds: per-visitor run cap per day, hard daily spend cap, and the precomputed map and syllabi as the always-available fallback when the cap is hit.
 
 ## 12. Model strategy
 
 | Role | Starting choice | Rationale | Upgrade / fallback |
 |---|---|---|---|
-| Lead (decompose, reconcile) | Claude Opus 5 | Hardest judgment: structure, conflict resolution, ordering | Falls back to Sonnet 5 on overload |
-| Researcher | Claude Sonnet 5 | Highest volume and the cost driver; search-and-summarize is well within range | Measured against Opus 5 in Suite B before fixing |
-| Isnad | Claude Opus 5 | The guardrail that the product's credibility rests on; false negatives are the worst failure | — |
+| Cartographer (offline) | Claude Opus 5 | Runs rarely, shapes everything downstream | — |
+| Lead | Claude Opus 5 | Hardest judgment: structure, conflict resolution, ordering | Sonnet 5 on overload |
+| Researcher | Claude Sonnet 5 | Highest volume, cost driver; retrieval and summarizing | Measured against Opus 5 in Suite B before fixing |
+| Isnad | Claude Opus 5 | The guardrail the product's credibility rests on | — |
 | Counter-reader / Realist | Claude Sonnet 5 | Narrow mandates, short outputs | Promote if Suite A shows misses |
-| LLM judge (evals, offline) | Claude Opus 5 | Judge should be at least as strong as the system judged | Agreement with hand checks reported |
+| LLM judge (offline) | Claude Opus 5 | At least as strong as the system judged; agreement with hand checks reported | — |
 
-**Model choice is a measured tradeoff, not a default.** The researcher tier is the whole cost story; the first real experiment is Sonnet-vs-Opus researchers on Suite B, reported as quality against dollars.
-
-**Upgrade protocol:** when a new model ships, run both suites against the current pinned setup and the candidate, compare quality, cost, and latency, and record the decision in `docs/EVAL_RESULTS.md`. Model IDs are pinned in config; no silent upgrades.
+Model choice is a measured tradeoff. First experiment: Sonnet vs. Opus researchers on Suite B, reported as quality against dollars. Model IDs pinned in config; no silent upgrades. On a new model release, both suites run against pinned and candidate, and the decision is recorded.
 
 ## 13. Data requirements
 
 | Data | Source | Handling |
 |---|---|---|
-| Candidate readings | Live web search at run time | Not stored beyond the run |
-| Existence and edition facts | Open Library API | Cached locally to cut repeat calls and cost |
-| Obtainability signals | Open access registries, in-print status, public-domain status, streaming availability | Cached with the item |
-| Abeer's shelf (for "already on the shelf" marks) | The Sultan's `shelf.json` | Read-only copy; ratings and review text are Abeer's, never presented as the council's judgment |
-| Cached example syllabi | Pre-run, committed to the repo | Public, re-runnable |
-| Eval sets | Hand-built, in the repo | Fixed; changes are versioned so numbers stay comparable |
-| Visitor questions | — | Not stored, not logged with identifiers, not used for anything after the run |
+| The shelf (837 books: title, author, status, rating, review, and a Claude-written catalog entry) | `shelf-librarian` repo | Committed copy, refreshed deliberately; private notes and shelf tags already stripped upstream |
+| Subject map | Cartographer output | Committed; rebuilt when the shelf changes |
+| Book structure (tables of contents, chapter titles) | Open Library, web search | Cached per book; the cache is what makes chapter-level assignment affordable |
+| Outside additions: existence, edition, obtainability | Open Library, open-access registries, web search | Cached with the item |
+| Cached syllabi | Council runs | Committed with the date and model IDs that produced them |
+| Eval sets | Hand-built | Versioned so numbers stay comparable |
+| Visitor questions | — | Not stored, not logged with identifiers |
 
-No training, no fine-tuning, no user data retention. Aggregate counters only (runs per day, spend).
+No training, no fine-tuning. Aggregate counters only.
 
 ## 14. Responsible AI
 
-- **Whose knowledge counts.** A syllabus is a claim about what matters. The counter-reader exists because the easy default — a subject explained entirely by outsiders to it — is a real failure, not a stylistic one. It's judged on whether it changes the syllabus, not on whether it speaks.
-- **Access as fairness.** Assigning paywalled scholarship to someone without a university is a way of excluding them. Obtainability is a hard requirement for that reason.
-- **Transparency.** The scrap heap is public by design: a reader can see what the council rejected and why, and disagree.
-- **Honest limits.** The page states that the council can be wrong, that verification covers existence and access rather than quality, and that a syllabus is one defensible path through a subject, not the canon.
-- **Attribution.** Scholarly positions are attributed to named sources, never invented.
-- **Regulatory.** No profiling, no automated decisions about people, no biometric or sensitive data. Under the EU AI Act this sits in the minimal-risk tier; the applicable obligation is disclosure that the content is AI-generated, which the page does prominently.
+- **A library is an argument.** Reading a shelf as a curriculum makes its biases visible, which is why the counter-reader's mandate is aimed at the shelf itself, not at the world. It's judged on whether it changes the syllabus, not on whether it produces commentary.
+- **It's one person's library.** The page says so plainly: this is a defensible path through what Abeer happens to own, not a canon.
+- **Access as fairness.** Outside additions must be obtainable without a university, or they're struck.
+- **Transparency.** The scrap heap is public; so is the map's verdict on thin subjects.
+- **Abeer's reviews** appear as personal opinion, attributed, never as scholarship.
+- **Regulatory.** No profiling, no automated decisions about people, no sensitive data. Minimal-risk tier under the EU AI Act; the applicable obligation is disclosing that the content is AI-generated, which the page does prominently.
 
 ---
 
@@ -200,52 +225,64 @@ No training, no fine-tuning, no user data retention. Aggregate counters only (ru
 
 ## 15. User stories (with quality clauses)
 
-- As a curious adult, I want a course on a subject I care about, **where every assigned reading exists, states where to get it free or cheaply, and the whole thing fits the hours I said I had** — and where, if the council can only verify four units' worth, it tells me instead of padding.
-- As a curious adult, I want to know what I'm being assigned and why, **where each unit names a real scholarly disagreement with sources**, and gracefully says "the sources here mostly agree" when there isn't one.
-- As a hiring manager, I want to watch the council work, **where I can see each agent's mandate, what it objected to, and what was struck and why**, within 60 seconds and without reading code.
+- As the shelf's owner, I want to see what my library can teach, **where every subject on the map is backed by books I actually own and labeled honestly as a course, a unit, or not yet**.
+- As the shelf's owner, I want a six-week course from books in my house, **where every assigned chapter exists and covers what the syllabus says it covers, and where anything I'd have to buy is one item per unit, justified by a named gap, and obtainable for free or cheaply**.
+- As the shelf's owner, I want to be told when my shelf isn't enough, **where the council names the gap instead of padding the syllabus** — and says so on the map before I click.
+- As a hiring manager, I want to watch the council work, **where I can see each agent's mandate, its objections, and what was struck and why**, in under a minute and without reading code.
 - As a hiring manager, I want to know whether the multi-agent design was worth it, **where the repo shows planted-flaw results for one agent versus the council, with cost and latency alongside**.
-- As a visitor on a phone, I want to read a finished example instantly, **where cached syllabi load with no wait and no cost**, including when the daily cap has been hit.
+- As any visitor, I want the page to be instantly useful, **where the map and cached syllabi load with no wait and no cost**, including when the daily cap is hit.
 
 ## 16. Failure modes and fallbacks
 
 | Failure | Detection | Behavior |
 |---|---|---|
-| Researcher returns nothing usable | fewer than 2 verified items in a thread | Lead merges or drops the thread |
-| Isnad can't verify an item | uncertain verdict | Struck; shown in scrap heap with reason |
-| Too little survives verification | fewer than 4 units | Ship a short syllabus, say why |
-| A reviewer times out | per-agent timeout | Ship without that pass, labeled on the page |
-| Web search unavailable | tool error | Abort with an honest message; offer cached examples |
-| Daily cap reached | counter | Live runs disabled, cached examples still served |
-| Model overload / 429 | API error | Retry with backoff, then fall back a tier (§12) |
-| Question outside scope | lead's refusal path | Short explanation, suggest a rephrase |
+| Book's structure can't be established | no table of contents found | Assign as a whole-book reading, marked |
+| Researcher finds nothing on the shelf for a thread | fewer than 2 confirmed readings | Merge, drop, or convert to a named gap |
+| Whole subject too thin | fewer than 4 units | Short syllabus, with the gap stated |
+| Isnad can't confirm a chapter claim | uncertain verdict | Struck; shown in the scrap heap |
+| A reviewer times out | per-agent timeout | Ship without that pass, labeled |
+| Web search unavailable | tool error | Shelf-only syllabus; outside additions deferred, stated on the page |
+| Daily cap reached | counter | Live runs off; map and cached syllabi still served |
+| Model overload | API error | Backoff, then fall back a tier (§12) |
+| Subject outside the shelf | pre-run match | Honest refusal, with the nearest subjects the shelf does support |
 
 ## 17. Monitoring
 
-- **Per run:** wall-clock and cost per agent, searches per researcher, items proposed vs. struck, strike reasons, units shipped, whether the lead declined.
-- **Daily:** runs, spend against cap, error and timeout rates, guardrail trigger counts (refusals, cap hits, short syllabi).
-- **Drift:** both eval suites re-run on every model change and monthly; results appended to `docs/EVAL_RESULTS.md` with the model IDs and date, so a regression is visible rather than inferred.
-- **Human review:** every syllabus in the eval set is hand-checked at least once; the LLM judge's agreement with those checks is reported alongside its scores. Live runs are not reviewed (nothing is stored), which is a deliberate tradeoff of observability for privacy.
+- **Per run:** wall-clock and cost per agent, searches, readings proposed vs. struck with reasons, shelf share, gaps named, units shipped.
+- **Daily:** runs, spend against cap, errors and timeouts, guardrail triggers (refusals, cap hits, short syllabi).
+- **Drift:** all three suites re-run on every model change and monthly, appended to `docs/EVAL_RESULTS.md` with model IDs and date.
+- **Human review:** every syllabus in the eval set is hand-checked at least once; the LLM judge's agreement with those checks is reported alongside its scores. Live runs aren't reviewed, because nothing is stored — observability traded for privacy, deliberately.
 
 ## 18. Cost and infrastructure envelope
 
-- Target cents per live run; hard daily spend cap; Open Library results cached to avoid repeat calls.
-- Cached examples cost nothing to serve and carry most of the traffic.
-- Hosting: Replit, its own subdomain, alongside the other projects.
-- Secrets: Anthropic key server-side only, rotated on the same quarterly schedule as the other projects.
+- **v1:** zero marginal cost per visit. The site is static — map, syllabi, and recorded runs are files in the repo. A full rebuild (map plus every syllabus) costs a few dollars and is run deliberately, with a budget checked before it starts.
+- Book-structure and verification caches make rebuilds cheap after the first one.
+- Hosting: Replit static deployment, its own subdomain, alongside the other projects. No server and no key in production until v2.
+- **v2:** a small server holds the Anthropic key, rotated on the same quarterly schedule as the other projects.
 
 ## 19. Milestones
 
-1. **Skeleton:** lead → researchers → draft syllabus in a terminal. No UI.
-2. **Isnad:** existence and access checks, struck list.
-3. **Suite A:** planted flaws, single agent vs. council, first real numbers.
-4. **Counter-reader and realist**, then reconciliation, ordering, and objectives.
-5. **Suite B** and the researcher model comparison.
-6. **The page:** live council view, streaming units, cached examples.
-7. **Deploy**, then write the portfolio page from the measurements.
+1. **The map:** cartographer over the shelf; subjects, verdicts, and counts printed to a terminal.
+2. **Skeleton council:** lead → researchers → draft syllabus for one well-covered subject. No UI.
+3. **Isnad:** chapter-fidelity checks and the struck list. This is the make-or-break piece.
+4. **Suite A:** planted flaws, single agent vs. council, first real numbers.
+5. **Counter-reader and realist**, then reconciliation, ordering, objectives.
+6. **Recording:** every run writes a transcript (agent, step, claim, verdict, timing, cost) that the site can replay.
+7. **Suite B and C**, plus the researcher model comparison.
+8. **Generate:** run the council across the mapped subjects; commit the syllabi and transcripts.
+9. **The page:** the map, the replay, the syllabi.
+10. **Deploy** as a static site, then write the portfolio page from the measurements.
 
 ## 20. Open questions
 
-- Which model for researchers — settled by §12's first experiment, not by preference.
-- Does the shelf cross-reference read the Sultan's data live or a committed copy?
-- Is "where scholars disagree" reliable enough to ship, or does it need its own verification pass?
-- Do cached examples need re-running on a schedule, or are they snapshots with a visible date?
+- How are subjects clustered: from the existing catalog entries (genres and themes already written for each book), by embeddings, or by asking a model to read the whole shelf at once? Cheapest defensible option first.
+- Can chapter-level tables of contents be found reliably enough to make chapter assignment the default rather than the exception? Milestone 3 answers this; if not, units assign whole books with page estimates.
+- Does the shelf data live as a committed copy or read from the Sultan's repo?
+- Should other people be able to upload their own Goodreads export later, and what would that cost per run?
+- Do cached syllabi get re-run on a schedule, or are they dated snapshots?
+
+## 21. v2 — live runs
+
+The same council, on a subject a visitor types. Everything needed for it already exists in v1: the council code, the caches, the recorded-transcript format (which becomes a live stream). What it adds is the operational load — a server, a key in production, rate limits, a spend cap, and the guardrails in §11 that v1 doesn't need.
+
+Worth doing when the precomputed version is good enough that a stranger's subject is likely to produce something decent, and not before. The honest failure mode — "your subject isn't in this library" — is already the map's job.
